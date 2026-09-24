@@ -1,0 +1,28 @@
+name: build-grafana
+
+on:
+  workflow_dispatch:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check architecture
+        run: |
+          uname -m
+          docker version
+
+      - name: Pull Grafana image
+        run: |
+          docker pull grafana/grafana:12.4.0
+
+      - name: Save image
+        run: |
+          docker save grafana/grafana:12.4.0 | gzip > grafana.tar.gz
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: grafana-x86_64
+          path: grafana.tar.gz
